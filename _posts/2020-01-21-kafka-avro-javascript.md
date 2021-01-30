@@ -186,4 +186,10 @@ produce()
   .then(() => consume())
 ```
 
-I created a repository to demo this example. There is a docker-compose file which takes care of setting up a Kafka Broker and a Schema Registry: https://github.com/Edefritz/kafkajs_avro_demo
+The console should print something like:
+```
+Produced message to Kafka: {"id":"1","value":1}
+Consumed message from Kafka: Example { id: '1', value: 1 }
+```
+
+I created a [repository](https://github.com/Edefritz/kafkajs_avro_demo) to demo this example. There is a docker-compose file which takes care of setting up a Kafka Broker and a Schema Registry.
