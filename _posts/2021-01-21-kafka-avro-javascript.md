@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Kafka, AVRO and TypeScript?
-categories: [Kafka, JavaScript, AVRO, TypeScript, NodeJS]
+categories: [KafkaJS, JavaScript, AVRO, TypeScript, NodeJS, Kafka]
 ---
 
 # Kafka, AVRO and TypeScript?
