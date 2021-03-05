@@ -3,14 +3,18 @@ layout: post
 title: Kafka, AVRO and TypeScript?
 categories: [KafkaJS, JavaScript, AVRO, TypeScript, NodeJS, Kafka]
 ---
+In this article I want to show a simple example of how you can produce and consume Kafka messages with the AVRO format using TypeScript/JavaScript and KafkaJS.
 
-# Kafka, AVRO and TypeScript?
+# What is Kafka?
 
-Kafka is a very popular message broker system and used in a lot of companies right now. However, I always assumed that most Kafka users are also using JVM based clients like Java, Scala and Kotlin.
+Apache Kafka is a very popular event streaming platform and used in a lot of companies right now. If you want to learn more about Kafka, check out the official [website](https://kafka.apache.org/).
 
-Recently I was playing around with a project in TypeScript and since it would have been handy to dump the results directly into Kafka, I saw that there is also a Kafka Client for JS. And it even works with AVRO.
+However, since the whole ecosystem is based on JVM (Java, Scala, Kotlin), I never really checked if there are clients.
 
-# Example
+Recently I was playing around with a project in TypeScript and since it would have been handy to stream the results directly into Kafka, I checked for a JavaScript client and found [KafkaJS](https://kafka.js.org/). And it even plays well with AVRO.
+
+# How to use it?
+
 Here is a simple example for an AVRO producer and consumer:
 
 Set up a new node project and install these two dependencies. The schema registry is required to work with AVRO schemas.
@@ -20,7 +24,9 @@ npm install kafkajs
 npm install @kafkajs/confluent-schema-registry
 ```
 
-Then create a new file. This example is in TypeScript but in JS it would work more or less in a similar way.
+## Configuring the Kafka connection
+
+This example is in TypeScript but in JS it would work more or less in a similar way.
 First import all the dependencies and configure all Kafka related settings.
 
 
@@ -59,7 +65,9 @@ declare type MyMessage = {
   value: number;
 };
 ```
-Now we need to make sure we can encode messages in AVRO. Therefore we need to be able to read a schema from a file an register it in the schema registry.
+## Create an AVRO schema
+
+Now we need to make sure we can encode messages in AVRO. Therefore we need to be able to read a schema from a file and register it in the schema registry.
 
 This is how the schema in this example will look like. Pretty straightforward, two fields called id which is a string and value which is an integer. 
 Insert this to a file called schema.avsc, we will use the confluent-schema-registry package to read it and register the schema in the schema registry.
@@ -82,8 +90,10 @@ Insert this to a file called schema.avsc, we will use the confluent-schema-regis
   ]
 }
 ```
+## Register an AVRO schema
 
-Here is the function which we will use to read an avro schema from a file and register it in the schema registry.
+Here is the function which we will use to read an AVRO schema from a file and register it in the schema registry.
+
 ```ts
 // This will create an AVRO schema from an .avsc file
 const registerSchema = async () => {
@@ -97,7 +107,10 @@ const registerSchema = async () => {
 };
 ```
 
-This is how we can build a producer. Before pushing a message (of type MyMessage which we defined above) we will encode it usind the AVRO schema from the registry.
+## Produce a message using the AVRO schema
+
+This is how we can build a producer. Before pushing a message (of type MyMessage which we defined above) we will encode it using the AVRO schema from the registry.
+
 ```ts
 // push the actual message to kafka
 const produceToKafka = async (registryId: number, message: MyMessage) => {
@@ -120,8 +133,9 @@ const produceToKafka = async (registryId: number, message: MyMessage) => {
   await producer.disconnect();
 };
 ```
+## Create a Kafka topic
+You can skip this if the topic is already present. Before we can produce a message, we need to have a topic. This function also checks if the topic is already present in case you run this multiple times. 
 
-Before we can produce a message, we need to create a topic. It also checks if the topic is already present in case you run this multiple times. You can skip this if the topic is already present.
 ```ts
 // create the kafka topic where we are going to produce the data
 const createTopic = async () => {
@@ -191,5 +205,7 @@ The console should print something like:
 Produced message to Kafka: {"id":"1","value":1}
 Consumed message from Kafka: Example { id: '1', value: 1 }
 ```
+
+## Demo repository with this code
 
 I created a [repository](https://github.com/Edefritz/kafkajs_avro_demo) to demo this example. There is a docker-compose file which takes care of setting up a Kafka Broker and a Schema Registry.

@@ -1,3 +1,11 @@
+---
+layout: post
+title: Throttle a series of fetch requests in JavaScript
+categories: [NodeJS, JavaScript, Throttle]
+---
+
+# Throttle a series of fetch requests in JavaScript
+
 Let's say you need to make API requests to process a huge array of data. With JavaScript's asynchronous nature it is easy to make a lot of requests in parallel. 
 
 ```js
